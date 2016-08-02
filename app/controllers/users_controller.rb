@@ -2,6 +2,12 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!
   def info
     @subscription = current_user.subscription
+    if @subscription.active
+      @stripe_customer = Stripe::Customer.retrieve (@subscription.stripe_user_id)
+      @stripe_subscription =
+      @stripe_customer.subscriptions.first
+    end
+    
   end
   def charge
     token = params["stripeToken"]
